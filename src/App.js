@@ -15,7 +15,7 @@ function App() {
     produtora: "",
     solicitante: "",
     job: "",
-    observacao: "obs lindo",
+    observacao: "Camila Linda te amo meu amor coisa linda",
     valor: {
       tabela: 3,
       valorHora: 52,

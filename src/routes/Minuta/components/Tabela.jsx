@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   },  
   col: {
     width: 'auto',
-    height: 28,
+    height: 23,
     padding: 5,
     borderBottom: '1px solid #000',
     borderLeft: '1px solid #000',
@@ -48,10 +48,7 @@ const Cell = ({ style, text }) => (
   </View>
 );
 
-// Define o cabeçalho da tabela com base em 'cols'
-const Header = ({
-  cols 
-}) => (
+const Header = ({ cols }) => (
   <View style={[styles.row, styles.highlight]}>
     {cols.map((item) => {
       const { title, size } = item;
@@ -60,12 +57,9 @@ const Header = ({
   </View>
 );
 
-// Define o corpo da tabela
-const Body = ({
-  data,
-  colsSize
-}) => {
+const Body = ({ data, colsSize }) => {
   const { diarias, tipo } = data;
+  const formatCurrency = value => value.toLocaleString("pt-br", { style: "currency", currency: "BRL" });
 
   // Define o componente para linhas adicionais
   const Additional = ({ adicional }) => (
@@ -75,8 +69,8 @@ const Body = ({
 
         return (
           <View style={styles.row} key={ocorrencia}>
-            <Cell style={{ width: "75%" }} text={ocorrencia} />
-            <Cell style={{ width: colsSize[4] }} text={valor} />
+            <Cell style={{ width: "75%"}} text={`Adicional de ${ocorrencia}`} />
+            <Cell style={{ width: colsSize[4] }} text={formatCurrency( valor )} />
           </View>
         );
       })}
@@ -133,28 +127,16 @@ const Body = ({
   );
 };
 
-// Define o rodapé da tabela
-const Foot = ({
-  data,
-  colsSize
-}) => {
+const Foot = ({ data, colsSize }) => {
   const { tipo } = data;
 
   // Importa o resultado total
   const totalValues = Total( data );
   // Define célula em branco para manter o tamanhos iguais das linhas
-  const BlankCell = () => (
-    <Cell
-      style={{ width: "75%", border: "none" }}
-    />
-  );
+  const BlankCell = () => ( <Cell style={{ width: "75%", border: "none" }}/> );
 
   // Define as linhas do rodapé
-  const Rows = ({
-    text,
-    value,
-    style
-  }) => (
+  const Rows = ({ text, value, style }) => (
     <View style={[styles.row, { justifyContent: "flex-end" }]}>
       <BlankCell />
       <Cell style={[style, { width: colsSize[3] }]} text={text} />
@@ -175,9 +157,7 @@ const Foot = ({
   );
 };
 
-const Tabela = ({ 
-  data
-}) => {
+const Tabela = ({ data }) => {
 
   // Define o titulo e tamanho de cada coluna desejada
   const cols = [
