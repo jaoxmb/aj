@@ -26,7 +26,7 @@ function App() {
         id: '1',
         inicio: "2022-08-21T10:00",
         horas: 15,
-        ocorrencia: "Montagem",
+        ocorrencia: "Retirada",
         valor: 520,
         adicional: [
           {
