@@ -1,19 +1,17 @@
-import React from "react";
+import React, { memo } from "react";
 import moment from "moment";
 
 //components
 import Valor from "./Valor";
 
-export default function Diarias({ 
+const Diarias = ({ 
   navigateOpenEditor,
   data
-}) {
+}) => {
 
   const { diarias } = data;
 
-  const formatCurrency = ( number ) => {
-    return number.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
-  }
+  const formatCurrency = ( number ) => number.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
 
   return (
     <>
@@ -81,3 +79,5 @@ export default function Diarias({
     </>
   )
 };
+
+export default Diarias;

@@ -15,7 +15,7 @@ function App() {
     produtora: "",
     solicitante: "",
     job: "",
-    observacao: "Camila Linda te amo meu amor coisa linda",
+    observacao: "obs lindo",
     valor: {
       tabela: 3,
       valorHora: 52,
@@ -53,58 +53,51 @@ function App() {
 
   const openNavigation = {
     home: () => { 
-      navigate('/aj/');
+      navigate('/');
     },
     editor: {
       new: () => {
         const newId = Math.random().toString(36).slice(8);
-        navigate(`/aj/editor/new/${newId}`);
+        navigate(`/editor/new/${newId}`);
       },
       edit: (id) => {
-        navigate(`/aj/editor/edit/${id}`);
+        navigate(`/editor/edit/${id}`);
       },
     },
     minuta: () => {
-      navigate('/aj/minuta');
+      navigate('/minuta');
     }
   }
 
-  useEffect(() => {
-
-    window.onpopstate = () => {
-      document.querySelector('body').style = '';
-      document.querySelector('.home').style = '';
-    }
-
-  }, [])
-
   return (
     <>
-      {window.location.pathname !== '/aj/minuta' && (
-        <Main 
-          data={data}
-          setData={setData} 
-          openNavigation={openNavigation}
-        />
-      )}
-
       <Routes>
         <Route
-          path='/aj/'
-          element={null}
-        />
-        <Route 
-          path='/aj/editor/:editorMode/:usedItemId'
+          path='/*'
           element={(
-            <Editor
-              openNavigation={openNavigation}
-              data={data}
-              setData={setData}
-            />
-          )} 
+            <>
+              <Main 
+                data={data}
+                setData={setData} 
+                openNavigation={openNavigation}
+              />
+              <Routes>
+                <Route 
+                  path='editor/:editorMode/:usedItemId'
+                  element={(
+                    <Editor
+                      openNavigation={openNavigation}
+                      data={data}
+                      setData={setData}
+                    />
+                  )} 
+                />
+              </Routes>
+            </>
+          )}
         />
         <Route 
-          path='/aj/minuta'
+          path='/minuta'
           element={
             <Minuta 
               data={data}

@@ -127,6 +127,14 @@ const Editor = ({
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
     animation();
+
+    window.onpopstate = () => {
+      if ( window.location.pathname === '/' ){
+        document.querySelector('body').style = '';
+        document.querySelector('.home').style = '';
+      }
+    };
+
   }, []);
   return (
     <div className="container editor border dontBottom">
