@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   },  
   col: {
     width: 'auto',
-    height: 23,
+    height: 25,
     padding: 5,
     borderBottom: '1px solid #000',
     borderLeft: '1px solid #000',
@@ -157,7 +157,7 @@ const Foot = ({ data, colsSize }) => {
   );
 };
 
-const Tabela = ({ data }) => {
+const Tabela = ({ data, style }) => {
 
   // Define o titulo e tamanho de cada coluna desejada
   const cols = [
@@ -186,7 +186,7 @@ const Tabela = ({ data }) => {
   const colsSize = cols.map( item => item.size );
 
   return (
-    <View style={styles.table}>
+    <View style={[styles.table, {...style}]}>
       <Header cols={cols} />
       <Body data={data} colsSize={colsSize} />
       <Foot data={data} colsSize={colsSize} />
