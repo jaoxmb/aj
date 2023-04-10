@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Text, View, StyleSheet } from '@react-pdf/renderer';
 import moment from 'moment';
+
+// components
 import Valor from '../../../components/Valor';
 import Total from '../../../components/Total';
 
@@ -10,7 +12,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 'auto',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    fontSize: 10,
+    padding: '0 30px'
   },  
   row: {
     display: 'flex',
@@ -22,6 +26,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     color: '#fff',
     textTransform: 'uppercase',
+    fontWeight: 'medium',
+    fontSize: 11
   },  
   col: {
     width: 'auto',
@@ -39,6 +45,9 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
   },
+  textBold: {
+    fontWeight: 'bold'
+  }
 });
 
 // Define a célula da tabela
@@ -49,7 +58,7 @@ const Cell = ({ style, text }) => (
 );
 
 const Header = ({ cols }) => (
-  <View style={[styles.row, styles.highlight]}>
+  <View style={[styles.row, styles.highlight, { borderRight: '1px solid #000', borderTop: '1px solid #000' }]}>
     {cols.map((item) => {
       const { title, size } = item;
       return <Cell style={{ width: size }} text={title} />;
@@ -131,7 +140,7 @@ const Foot = ({ data, colsSize }) => {
   const { tipo } = data;
 
   // Importa o resultado total
-  const totalValues = Total( data );
+  const totalValues = useCallback(() => Total( data ), [data]);
   // Define célula em branco para manter o tamanhos iguais das linhas
   const BlankCell = () => ( <Cell style={{ width: "75%", border: "none" }}/> );
 
@@ -147,12 +156,12 @@ const Foot = ({ data, colsSize }) => {
   return (
     <View style={{ marginTop: 10, borderRight: "1px solid #000" }}>
       <Rows
-        value={tipo === "pacote" ? totalValues.diaries : totalValues.hours}
+        value={tipo === "pacote" ? totalValues().diaries : totalValues().hours}
         text={tipo === "pacote" ? "Diárias" : "Horas"}
         style={{ borderTop: "1px solid #000" }}
       />
-      <Rows value={totalValues.additional} text={"Adicional"} />
-      <Rows value={totalValues.total} text={"Total"} style={styles.highlight} />
+      <Rows value={totalValues().additional} text={"Adicional"} />
+      <Rows value={totalValues().total} text={"Total"} style={styles.textBold} />
     </View>
   );
 };

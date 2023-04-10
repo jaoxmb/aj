@@ -1,13 +1,15 @@
 import React from "react";
 import { StyleSheet, Font, Document, Page } from "@react-pdf/renderer";
 
-// Components
+// This Components
 import Tabela from "./Tabela"
 import Cabecalho from "./Cabecalho";
+import Corpo from "./Corpo";
 
 // fonts
 import RobotoRegular from "../../../fonts/Roboto/Roboto-Regular.ttf";
 import RobotoMedium from "../../../fonts/Roboto/Roboto-Medium.ttf";
+import RobotoBold from "../../../fonts/Roboto/Roboto-Bold.ttf";
 import RobotoBlack from "../../../fonts/Roboto/Roboto-Black.ttf";
 
 Font.register({ 
@@ -21,6 +23,10 @@ Font.register({
       fontWeight: 'medium'
     },
     {
+      src: RobotoBold,
+      fontWeight: 'bold'
+    },
+    {
       src: RobotoBlack,
       fontWeight: 'black'
     }
@@ -29,13 +35,10 @@ Font.register({
 
 const styles = StyleSheet.create({
   document: {
-    fontFamily: 'Roboto',
-    fontSize: 10
-  },
-  margin: {
     width: '100%',
     height: '100%',
-    padding: '0 25px 0 25px'
+    fontFamily: 'Roboto',
+    fontSize: 11
   }
 });
 
@@ -45,7 +48,8 @@ const Arquivo = ({
   <Document style={styles.document}>
     <Page>
       <Cabecalho data={data}/>
-      <Tabela data={data} style={styles.margin}/>
+      <Corpo data={data}/>
+      <Tabela data={data}/>
     </Page>
   </Document>
 );
