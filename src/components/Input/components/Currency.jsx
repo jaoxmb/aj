@@ -1,4 +1,8 @@
-import { useState } from "react";
+import React from "react";
+
+const toMoney = ( value ) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+const mask = ( value ) => toMoney(parseInt(value.replace(/\D/g, "")) / 100);
+const unmask = ( value ) => parseInt(value.replace(/[^0-9,]*/g, '').replace(',', '.'));
 
 const Currency = ({
   value = 0,
@@ -7,12 +11,6 @@ const Currency = ({
   className,
   placeholder
 }) => {
-
-  const toMoney = ( value ) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  const mask = ( value ) => toMoney(Number(value.replace(/\D/g, "")) / 100);
-  const unmask = ( value ) => Number(value.replace(/[^0-9,]*/g, '').replace(',', '.'));
-
-  const [ money, setMoney ] = useState(toMoney(value));
 
   return (
     <>
@@ -23,16 +21,15 @@ const Currency = ({
         placeholder={placeholder}
         inputMode="numeric"
         onChange={( event ) => { 
-          const maskValue = mask(event.target.value);
-          setMoney(() => maskValue);
-
-          event.target.value = unmask(maskValue);
-          onChange(event)
+          const value = event.target.value;
+          // Retorna valor como número sem mascara
+          event.target.value = unmask(mask(value));
+          onChange(event);
         }}
-        value={money}
+        value={toMoney(value)}
       />
     </>
-  )
-}
+  );
+};
 
-export default Currency
+export default Currency;

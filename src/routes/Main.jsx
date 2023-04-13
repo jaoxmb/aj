@@ -1,9 +1,9 @@
-import React, { useCallback } from "react";
+import React from "react";
 //components
 import Diarias from '../components/Diarias';
 import Tipo from '../components/Tipo';
 import { Inputs, Input } from '../components/Input/Input';
-import Total from "../components/Total";
+import Produtora from "../components/Input/Produtora/Produtora";
 
 export default function Main({ 
   data, 
@@ -34,12 +34,9 @@ export default function Main({
               onChange={handleChange}
               placeholder="Job"
             />
-            <Input
-              type="text"
-              name="produtora"
-              value={data.produtora}
-              onChange={handleChange}
-              placeholder="Produtora"
+            <Produtora 
+              data={data} 
+              setData={setData}
             />
             <Input
               type="text"
@@ -50,16 +47,9 @@ export default function Main({
             />
           </Inputs>
 
-          <Tipo 
-            data={data} 
-            setData={setData} 
-            pastType={data.tipo} 
-          />
+          <Tipo data={data} setData={setData} pastType={data.tipo} />
 
-          <Diarias 
-            navigateOpenEditor={openNavigation.editor}  
-            data={data} 
-          />
+          <Diarias navigateOpenEditor={openNavigation.editor} data={data} />
 
           <Input
             type="textarea"

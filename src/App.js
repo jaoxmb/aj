@@ -1,5 +1,5 @@
 import './style.scss';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 
 // pages
@@ -12,7 +12,15 @@ function App() {
 
   const [data, setData] = useState({
     tipo: "tabela",
-    produtora: "",
+    produtora: {
+      string: '',
+      empresa: {
+        razao: '',
+        cnpj: '',
+        cep: '',
+        email: ''
+      }
+    },
     solicitante: "",
     job: "",
     observacao: "obs lindo",
