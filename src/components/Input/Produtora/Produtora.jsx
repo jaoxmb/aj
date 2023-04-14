@@ -9,7 +9,10 @@ const mask = ( string ) =>
 
 const unmask = ( string ) => string.replace(/\D/g, '').substring(0, 14);
 
-export default function Produtora({ data, setData }) {
+export default function Produtora({ 
+  data,
+  setData 
+}) {
 
   const { produtora: { string, empresa } } = data;
   const valueIsCnpj = /^[0-9]{3}/.test(string);
@@ -37,9 +40,7 @@ export default function Produtora({ data, setData }) {
     const cnpj = string;
 
     if ( completedCnpj ) {
-      fetch(
-        `https://cors-anywhere.herokuapp.com/https://receitaws.com.br/v1/cnpj/${cnpj}`
-      )
+      fetch(`https://script.google.com/macros/s/AKfycbyHwLCv0mngKxYWFz3NYmwLZjGo3UJ-rpo9nXxLOPuL5iYiedipfvcIR4EFWOqGuh8a/exec?cnpj=${cnpj}`)
         .then(( response ) => response.json())
         .then(( dataApi ) => {
           if ( dataApi.status === 'OK' ) {
