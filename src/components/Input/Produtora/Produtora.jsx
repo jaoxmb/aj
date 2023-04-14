@@ -1,91 +1,130 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-const mask = ( string ) => 
-  unmask(string)
+const maskCNPJ = ( string ) => 
+  unmaskCNPJ(string)
     .replace(/^(\d{2})(\d)/, '$1.$2')
     .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
     .replace(/\.(\d{3})(\d)/, '.$1/$2')
     .replace(/(\d{4})(\d)/, '$1-$2');
 
-const unmask = ( string ) => string.replace(/\D/g, '').substring(0, 14);
+const unmaskCNPJ = ( string ) => string.replace(/\D/g, '').substring(0, 14);
+
+const queryCNPJ = async ({ cnpj, queryStatus, setData, setQueryStatus }) => {
+  const { consultedCNPJ = "" } = queryStatus;
+
+  if ( cnpj !== consultedCNPJ ) {
+    try {
+      const response = await fetch(
+        `https://script.google.com/macros/s/AKfycbzBsSm03dZadsBRIoSqnEWGMoi-4GJSFPnSarxWZ_87eHDv6HWUnU1rdFkST9uOBtb2/exec?cnpj=${cnpj}`
+      );
+      const dataApi = await response.json();
+      const { status } = dataApi;
+
+      if ( status === "OK" ) {
+        const { email, cep, fantasia } = dataApi;
+        const empresa = { email, cep, nome: fantasia };
+
+        setData((data) => ({
+          ...data,
+          produtora: { ...data.produtora, empresa },
+        }));
+
+        setQueryStatus({
+          consultedCNPJ: cnpj,
+          empresa,
+          status: "OK",
+        });
+      } else if ( status === "ERROR" ) {
+        setQueryStatus({
+          consultedCNPJ: cnpj,
+          status: "ERROR",
+          message: dataApi.message,
+        });
+      }
+    } catch ( error ) {
+      console.error(error);
+    }
+  } else {
+    // Already consulted
+    setData((data) => ({
+      ...data,
+      produtora: { ...data.produtora, empresa: queryStatus.empresa },
+    }));
+  }
+};
 
 export default function Produtora({ 
   data,
   setData 
 }) {
-
+  
   const { produtora: { string, empresa } } = data;
-  const valueIsCnpj = /^[0-9]{3}/.test(string);
+  const isCnpj = /^[0-9]{3}/.test(string);
 
-  console.log(data.produtora);
+  const [ queryStatus, setQueryStatus ] = useState({});
 
   const handleChange = ( event ) => {
     const value = event.target.value;
-    const validation = /^[0-9]{14}/.test(unmask(value));
+    const unMaskValue = unmaskCNPJ(value);
+    const validation = /^[0-9]{14}/.test(unMaskValue);
+
+    if ( validation ) {
+      queryCNPJ({
+        cnpj: unMaskValue,
+        queryStatus, 
+        setData, 
+        setQueryStatus,
+      });
+    } else {
+      setQueryStatus({});
+    }
 
     setData(( data ) => {
-      const empresa = validation ? data.produtora.empresa : {};
+      const setProdutoraObj = () => {
+        const string = isCnpj ? unMaskValue : value;
+
+        return validation ? 
+          {
+            empresa: data.produtora.empresa,
+            string: string
+          } :
+          {
+            string: string
+          }
+      }
+
       return ({
         ...data,
-        produtora: {
-          empresa: empresa,
-          string: valueIsCnpj ? unmask(value) : value,
-        },
+        produtora: setProdutoraObj(),
       })
     });
+
   };
-
-  useEffect(() => {
-    const completedCnpj = /^[0-9]{14}/.test(string);
-    const cnpj = string;
-
-    if ( completedCnpj ) {
-      fetch(`https://script.google.com/macros/s/AKfycbyHwLCv0mngKxYWFz3NYmwLZjGo3UJ-rpo9nXxLOPuL5iYiedipfvcIR4EFWOqGuh8a/exec?cnpj=${cnpj}`)
-        .then(( response ) => response.json())
-        .then(( dataApi ) => {
-          if ( dataApi.status === 'OK' ) {
-            const { email, cep, nome } = dataApi;
-
-            setData(( data ) => ({
-              ...data,
-              produtora: {
-                ...data.produtora,
-                empresa: {
-                  email: email,
-                  cep: cep,
-                  nome: nome,
-                },
-              },
-            }));
-          }
-        })
-        .catch(( err ) => {
-          console.error(err);
-        });
-    }
-  }, [string, setData]);
 
   return (
     <div style={{ position: "relative" }}>
       <input
         type="text"
-        value={valueIsCnpj ? mask(string) : string}
+        value={isCnpj ? maskCNPJ(string) : string}
         onChange={handleChange}
         placeholder="Produtora"
       />
-      {empresa.nome && (
+      {isCnpj && (
         <span
           style={{
             position: "absolute",
-            right: 0,
+            right: 10,
             width: "50%",
             overflow: "hidden",
             whiteSpace: "nowrap",
             textOverflow: "ellipsis",
             color: "#cdcdcd",
+            textAlign: 'right'
           }}
         >
-          {empresa.nome}
+          {
+            empresa?.nome || queryStatus?.message
+          }
         </span>
       )}
     </div>

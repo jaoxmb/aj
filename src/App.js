@@ -13,10 +13,9 @@ function App() {
   const [data, setData] = useState({
     tipo: "tabela",
     produtora: {
-      string: '',
+      string: '43717567000196',
       empresa: {
-        razao: '',
-        cnpj: '',
+        nome: 'joao cu',
         cep: '',
         email: ''
       }
